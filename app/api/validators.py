@@ -12,9 +12,9 @@ async def check_project_name_exists(
     project_name: str,
     session: AsyncSession
 ) -> None:
-    """Проверяет, что проект с таким именем ещё не существует.
+    """Имя проекта уникально среди всех существующих проектов.
 
-    Вызывает HTTP 400, если имя уже занято.
+    Вызывает HTTP 400, если проект с таким именем уже зарегистрирован.
     """
     project = await charity_project_crud.get_project_id_by_name(
         project_name, session
@@ -30,9 +30,9 @@ async def check_project_is_closed(
     project_id: int,
     session: AsyncSession
 ) -> None:
-    """Проверяет, что проект ещё не закрыт.
+    """Проект открыт и принимает инвестиции.
 
-    Вызывает HTTP 400, если проект уже полностью инвестирован.
+    Вызывает HTTP 400, если проект уже полностью инвестирован и закрыт.
     """
     project = await charity_project_crud.get(project_id, session)
     if project.fully_invested:
@@ -46,9 +46,9 @@ def check_full_amount(
     project: CharityProject,
     obj_in: CharityProjectUpdate
 ) -> None:
-    """Проверяет, что новая требуемая сумма не меньше уже вложенной.
+    """Новая требуемая сумма не меньше уже собранных средств.
 
-    Вызывает HTTP 400, если `full_amount` меньше `invested_amount`.
+    Вызывает HTTP 400, если `full_amount` меньше текущего `invested_amount`.
     """
     if (
         obj_in.full_amount is not None
@@ -64,9 +64,9 @@ async def check_invested_funds_exists(
     project_id: int,
     session: AsyncSession
 ) -> CharityProject:
-    """Проверяет, что в проект ещё не были внесены средства.
+    """В проект не внесено ни одного пожертвования.
 
-    Возвращает проект, если средства не вносились.
+    Возвращает объект проекта.
     Вызывает HTTP 400, если `invested_amount > 0`.
     """
     project = await charity_project_crud.get(project_id, session)
@@ -82,9 +82,10 @@ async def check_project_exists(
     project_id: int,
     session: AsyncSession
 ) -> CharityProject:
-    """Проверяет, что проект с указанным ID существует.
+    """Проект с указанным ID существует в базе данных.
 
-    Возвращает объект проекта или вызывает HTTP 404.
+    Возвращает объект проекта.
+    Вызывает HTTP 404, если проект не найден.
     """
     project = await charity_project_crud.get(project_id, session)
     if project is None:

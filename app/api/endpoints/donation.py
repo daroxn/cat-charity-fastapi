@@ -29,7 +29,6 @@ SessionDep = Annotated[AsyncSession, Depends(get_async_session)]
 async def get_all_donations(
     session: SessionDep
 ):
-    """Только для суперюзеров."""
     return await donation_crud.get_all(session)
 
 
@@ -38,16 +37,13 @@ async def get_all_donations(
     response_model=List[DonationDB],
     response_model_exclude={'user_id'},
     dependencies=[Depends(current_user)],
+    summary='Получить список пожертвований текущего пользователя',
 )
 async def get_my_reservations(
     session: SessionDep,
     user: Annotated[User, Depends(current_user)],
 ):
-    """Только для зарегистрированных юзеров."""
-    reservations = await donation_crud.get_by_user(
-        session, user
-    )
-    return reservations
+    return await donation_crud.get_by_user(session, user)
 
 
 @router.post(
@@ -61,7 +57,6 @@ async def create_new_donation(
     donation: DonationCreate,
     session: SessionDep
 ):
-    """Только для зарегистрированных юзеров."""
     donation = await donation_crud.create(donation, session)
 
     await check_invested_funds(session)

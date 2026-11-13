@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.models import User
-from app.schemas import UserCreate
+from fastapi_users import schemas
 
 
 async def get_user_db(
@@ -42,7 +42,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def validate_password(
         self,
         password: str,
-        user: Union[UserCreate, User]
+        user: Union[schemas.UC, User]
     ) -> None:
         if len(password) < 3:
             error = 'Пароль должен содержать не менее 3 символов'
@@ -60,8 +60,8 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         self,
         user: User,
         request: Optional[Request] = None
-    ):
-        print(f'Пользователь {user.email} зарегистрирован.')
+    ) -> None:
+        pass
 
 
 async def get_user_manager(

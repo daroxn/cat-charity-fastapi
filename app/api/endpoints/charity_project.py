@@ -32,7 +32,6 @@ SessionDep = Annotated[AsyncSession, Depends(get_async_session)]
 async def get_all_charity_projects(
     session: SessionDep
 ):
-    """Только для суперюзеров."""
     return await charity_project_crud.get_all(session)
 
 
@@ -47,7 +46,6 @@ async def create_new_chariy_project(
     project: CharityProjectCreate,
     session: SessionDep
 ):
-    """Только для суперюзеров."""
     await check_project_name_exists(project.name, session)
     new_project = await charity_project_crud.create(project, session)
 
@@ -69,7 +67,6 @@ async def update_charity_project(
     obj_in: CharityProjectUpdate,
     session: SessionDep
 ):
-    """Только для суперюзеров."""
     project = await check_project_exists(project_id, session)
     if project is not None:
         await check_project_is_closed(project_id, session)
@@ -100,7 +97,6 @@ async def delete_charity_project(
     project_id: int,
     session: SessionDep
 ):
-    """Только для суперюзеров."""
     project = await check_project_exists(project_id, session)
     if project is not None:
         await check_invested_funds_exists(project_id, session)

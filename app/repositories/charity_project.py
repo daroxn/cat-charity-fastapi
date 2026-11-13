@@ -4,10 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.charity_project import CharityProject
-from app.repositories.base import BaseRepository
+from app.repositories.base import BaseCharityRepository
 
 
-class CharityProjectRepository(BaseRepository):
+class CharityProjectRepository(BaseCharityRepository):
     """Репозиторий для работы с благотворительными проектами."""
 
     async def get_project_id_by_name(

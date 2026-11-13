@@ -73,6 +73,10 @@ class BaseRepository:
         await session.commit()
         return db_obj
 
+
+class BaseCharityRepository(BaseRepository):
+    """Базовый репозиторий для моделей с `close_date` и `create_date`."""
+
     async def get_open(
         self,
         session: AsyncSession,
